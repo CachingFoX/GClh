@@ -1816,6 +1816,16 @@ var mainGC = function() {
         }
     }
 
+// Personal Cache Note: Adapt side of edit field for personal cache note
+    if (is_page("cache_listing")) {
+        try {
+            var note = ($('.Note.PersonalCacheNote')[0] || $('.NotesWidget')[0]);
+            if ( note ) {
+                $("#cacheNoteText").height($("#viewCacheNote").height()*1.02+36);
+            }
+        } catch(e) {gclh_error("Adapt size of edit field for personal cache note",e);}
+    }
+
 // Hide complete and Show/Hide Cache Note.
     if (is_page("cache_listing")) {
         try {

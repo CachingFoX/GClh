@@ -1826,7 +1826,7 @@ var mainGC = function() {
         } catch(e) {gclh_error("Adapt size of edit field for personal cache note",e);}
     }
 
-// Hide complete and Show/Hide Cache Note.
+// Personal Cache Note: Hide complete and Show/Hide Cache Note.
     if (is_page("cache_listing")) {
         try {
             var note = ($('.Note.PersonalCacheNote')[0] || $('.NotesWidget')[0]);
@@ -1859,10 +1859,10 @@ var mainGC = function() {
                     "}";
                 injectPageScript(code, 'body');
             }
-        } catch(e) {gclh_error("Hide complete and Show/Hide Cache Note:",e);}
+        } catch(e) {gclh_error("Hide complete and Show/Hide Cache Note",e);}
     }
 
-// Focus Cachenote-Textarea on Click of the Note (to avoid double click to edit)
+// Personal Cache Note: Focus Cachenote-Textarea on Click of the Note (to avoid double click to edit)
     if (is_page("cache_listing")) {
         try
         {
@@ -1882,7 +1882,7 @@ var mainGC = function() {
                   attributes: true //configure it to listen to attribute changes
                 });
             }
-        } catch(e) {gclh_error("Focus Cachenote-Textarea on Click of the Note:",e);}
+        } catch(e) {gclh_error("Focus Cachenote-Textarea on Click of the Note",e);}
     }
 
 // Show eMail and Message Center Link beside user. (Nicht in Cache Logs im Listing, das erfolgt später bei Log-Template.)

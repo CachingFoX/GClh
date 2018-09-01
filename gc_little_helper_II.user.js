@@ -11410,6 +11410,43 @@ var mainGC = function() {
             });
     }
 
+// add link to Ignore List into dashboard sidebar
+    if (is_page("dashboard")) {
+        var _keyIgnoreList = "ignore_list";
+
+        function addLink_IgnoreList() {
+            var sidebarLists = $($('ul[class="link-block"] a[href*="/my/watchlist.aspx"]')[0]);
+            var html = '<li><a href="https://www.geocaching.com/bookmarks/view.aspx?code='+getValue(_keyIgnoreList, "")+'">Ignore List</a></li>';
+            sidebarLists.parent().after(html);
+        }
+
+        function query_LinkIgnoreList(response) {
+            try {
+                if (response.responseText) {
+                    $(response.responseText).find('a[href*="/bookmarks/view.aspx?code="]').each(function() {
+                        var uid = this.href.match(/\/bookmarks\/view\.aspx\?code=(.*)/);
+                        if (uid && uid[1]) {
+                            setValue(_keyIgnoreList, uid[1]);
+                            addLink_IgnoreList();
+                        }
+                    });    
+                }
+            } catch(e) {gclh_error("Add link to Ignore List (query link)",e);}
+        }
+
+        try {
+            if (getValue(_keyIgnoreList, "") != "") {
+                addLink_IgnoreList();
+            } else {
+                GM_xmlhttpRequest({
+                    method: "GET",
+                    url: "https://www.geocaching.com/account/lists",
+                    onload: query_LinkIgnoreList
+                });
+            }
+        } catch(e) {gclh_error("Add link to Ignore List",e);}
+    }
+
 };  // End of mainGC.
 
 //////////////////////////////
@@ -11584,6 +11621,9 @@ function is_link(name, url) {
         case "souvenirs": /* only dashboard TODO public profile page */
             if (url.match(/\.com\/my\/souvenirs\.aspx/)) status = true;
             break;
+        case "lists":
+            if (url.match(/\.com\/account\/lists/)) status = true;
+            break;            
         default:
             gclh_error("is_link", "is_link("+name+", ... ): unknown name");
             break;

@@ -483,6 +483,7 @@ var variablesInit = function(c) {
     c.settings_modify_new_drafts_page = getValue("settings_modify_new_drafts_page", true);
     c.settings_gclherror_alert = getValue("settings_gclherror_alert", false);
     c.settings_auto_open_tb_inventory_list = getValue("settings_auto_open_tb_inventory_list", true);
+    c.settings_embedded_smartlink_ignorelist = getValue("settings_embedded_smartlink_ignorelist", true);
 
     try {
         if (c.userToken === null) {
@@ -9339,6 +9340,7 @@ var mainGC = function() {
             html += checkboxy('settings_but_search_map', 'Show buttons "Search" and "Map" on your dashboard') + "<br>";
             html += " &nbsp; " + checkboxy('settings_but_search_map_new_tab', 'Open links in new tab') + "<br>";
             html += checkboxy('settings_compact_layout_new_dashboard', 'Show compact layout on your dashboard') + "<br>";
+            html += checkboxy('settings_embedded_smartlink_ignorelist', 'Show link to Ignore List in sidebar section Lists') + show_help("Embedded a link in the section Lists to your Ignore List into the sidebar of the new dashboard.") + "<br>";
             html += newParameterVersionSetzen(0.9) + newParameterOff;
 
             html += "<div style='margin-top: 9px; margin-left: 5px'><b>Old dashboard only</b></div>";
@@ -10442,6 +10444,7 @@ var mainGC = function() {
                 'settings_modify_new_drafts_page',
                 'settings_gclherror_alert',
                 'settings_auto_open_tb_inventory_list',
+                'settings_embedded_smartlink_ignorelist',
             );
 
             for (var i = 0; i < checkboxes.length; i++) {
@@ -11411,7 +11414,7 @@ var mainGC = function() {
     }
 
 // add link to Ignore List into dashboard sidebar 
-    if (is_page("dashboard")) {
+    if (settings_embedded_smartlink_ignorelist && is_page("dashboard")) {
         try {
             var sidebarLists = $($('ul[class="link-block"] a[href*="/my/watchlist.aspx"]')[0]);
             var html = '<li><a id="gclh_goto_ignorelist" href="#">Ignore List</a></li>';

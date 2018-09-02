@@ -11410,41 +11410,34 @@ var mainGC = function() {
             });
     }
 
-// add link to Ignore List into dashboard sidebar
+// add link to Ignore List into dashboard sidebar 
     if (is_page("dashboard")) {
-        var _keyIgnoreList = "ignore_list";
-
-        function addLink_IgnoreList() {
+        try {
             var sidebarLists = $($('ul[class="link-block"] a[href*="/my/watchlist.aspx"]')[0]);
-            var html = '<li><a href="https://www.geocaching.com/bookmarks/view.aspx?code='+getValue(_keyIgnoreList, "")+'">Ignore List</a></li>';
+            var html = '<li><a id="gclh_goto_ignorelist" href="#">Ignore List</a></li>';
             sidebarLists.parent().after(html);
-        }
+        } catch(e) {gclh_error("Add link to Ignore List at the sidebar of the dashboard",e);}
 
-        function query_LinkIgnoreList(response) {
+        function openIgnoreList(response) {
             try {
                 if (response.responseText) {
-                    $(response.responseText).find('a[href*="/bookmarks/view.aspx?code="]').each(function() {
-                        var uid = this.href.match(/\/bookmarks\/view\.aspx\?code=(.*)/);
-                        if (uid && uid[1]) {
-                            setValue(_keyIgnoreList, uid[1]);
-                            addLink_IgnoreList();
-                        }
-                    });    
+                    var linkIgnoreList = $(response.responseText).find('a[href*="/bookmarks/view.aspx?code="]').first().attr('href');
+                    window.open(linkIgnoreList,"_self");
                 }
-            } catch(e) {gclh_error("Add link to Ignore List (query link)",e);}
+            } catch(e) {gclh_error("function openIgnoreList()",e);}
         }
 
-        try {
-            if (getValue(_keyIgnoreList, "") != "") {
-                addLink_IgnoreList();
-            } else {
+        $("#gclh_goto_ignorelist").click( function(e) {
+            try {
+                // link to ignore list is not static, the id can be changed
                 GM_xmlhttpRequest({
                     method: "GET",
                     url: "https://www.geocaching.com/account/lists",
-                    onload: query_LinkIgnoreList
+                    onload: openIgnoreList
                 });
-            }
-        } catch(e) {gclh_error("Add link to Ignore List",e);}
+                e.preventDefault();
+            } catch(e) {gclh_error("Request link to Ignore List",e);}
+        });
     }
 
 };  // End of mainGC.

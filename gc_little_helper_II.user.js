@@ -1356,6 +1356,394 @@ var mainGC = function() {
         }
     } catch(e) {gclh_error("New width",e);}
 
+// Enhanced All in one search
+    function gclh_enhanced_search() {
+
+        $('body').append('<div id="gclh_search_background_shadow" style="z-index:1000; width: 100%; height: 100%; background-color: #000000; position:fixed; top: 0; left: 0; opacity: 0.5; filter: alpha(opacity=50);"></div>');
+        $('#gclh_search_background_shadow').click(function(e){
+            $('#gclh_search_background_shadow').remove();
+            $('#gclh_search_overlay').remove();
+        });
+
+        var css = "";
+        css += "#gclh_search_overlay {";
+        css += "  width:100%;";
+        css += "  overflow: auto;";
+        css += "  position: absolute;";
+        css += "  top:60px;";
+        css += "  z-index:1001;";
+        css += "  overflow: auto;";
+        css += "}";
+        css += "#gclh_search_field {";
+        css += "  border: 1px #779c11 solid;";
+        css += "  padding: 10px;"
+        css += "  box-sizing: border-box;"
+        css += "  margin: 0px;"
+        css += "}";
+        css += "#gclh_search_results > ul {";
+        css += "  padding:0px;";
+        css += "  margin:0px;";
+        css += "}";
+        css += "#gclh_search_results > ul > li {";
+        css += "  padding:0px;";
+        css += "  list-style-type: none;";
+        css += "}";
+        css += "#gclh_search_results > ul > li:hover {";
+        css += "  background-color: #d8cd9d;";
+        css += "}";
+        css += "#gclh_search_results > ul > li:last-child {";
+        css += "  border-bottom: 1px #cccccc solid;";
+        css += "}";
+        css += ".gclh_search_primary_result {";
+        css += " background-color: #87CEFA;"
+        css += "}";
+        css += "#gclh_search_results div {";
+        css += "  display:flex;";
+        css += "  align-items:center;";
+        css += "}";
+        css += "#gclh_search_results img {";
+        css += "  width:24px; height:24px;";
+        css += "  margin-right:10px;";
+        css += "}";
+        css += "#gclh_search_results a {";
+        css += "  text-decoration: none;";
+        css += "  color: #293133;";
+        css += "}";
+        css += ".gclh_search_layout {"
+        css += "  width:750px;";
+        css += "}";
+
+        appendCssStyle(css, "#gclh_search_background_shadow");
+
+        var html = "";
+        html += '<div id="gclh_search_overlay" align="center">';
+        html += '  <div id="gc_search_container" class="gclh_search_layout" style="box-shadow: 4px 4px 15px black;">';
+        html += '    <input id="gclh_search_field" class="gclh_search_field gclh_search_layout" style="" placeholder="GCCode, User, Places, TB Code ..." ></input>';
+        html += '    <div id="gclh_search_results" class="gclh_search_layout" style="align: left; padding: 0px; border: 1px #779c11 solid; background-color: #ffffff; box-sizing: border-box;" align="left"></div>';
+        html += '  </div>';
+        html += '  <div style="height: 10px;"></div>';
+        html += '</div>';
+        $('body').append(html);
+
+
+
+        $('#gclh_search_field').click( function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $('#gclh_search_field').keyup( function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            if ( e.which == 13 && $('.gclh_search_primary_result').data('link') != "" ) {
+                document.location.href = $('.gclh_search_primary_result').data('link');
+            }
+
+            function getIndexOfSelectedRow( rows ) {
+                var index = rows.length;
+                for ( i=0; i<rows.length; i++ ) {
+                    // rows.eq(i) could be better
+                    if ( $(rows[i]).hasClass('gclh_search_primary_result') ) {
+                        index = i;
+                        break;
+                    }
+                }
+                return index;
+            }
+
+            if ( e.which == 38 || e.which == 40 ) {
+                var rows = $('#gclh_search_results li');
+                var length = rows.length;
+                var index = getIndexOfSelectedRow(rows);
+
+                index = (index+(( e.which == 40 )?1:-1));
+                index = index > 0 ? index%length:length-1;
+
+                $('#gclh_search_results li').removeClass('gclh_search_primary_result');
+                rows.eq(index).addClass('gclh_search_primary_result');
+
+                return;
+            }
+
+            var search = $('#gclh_search_field').val();
+
+            if ( search != "" && search == $('#gclh_search_results').data('search') ) {
+                return;
+            }
+
+            gclh_search();
+        });
+
+        $('#gclh_search_field').focus();
+
+        // gclh_search();
+    }
+
+
+        function gclh_search() {
+            var search = $('#gclh_search_field').val();
+            $('#gclh_search_results *').remove();
+            $('#gclh_search_results').data('search',search);
+            if ( search != "" ) { gclh_search_static(search); }
+            gclh_search_dynamic(search);
+        }
+
+
+
+        function gclh_search_static(search) {
+            // static entries
+            var link = 'https://www.geocaching.com/play/search?kw='+encodeURIComponent(search);
+
+            var node = gclh_search_add_section( 'gclh_search_results_keyword', $('#gclh_search_results'));
+            gclh_search_add_row( node, link, search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
+
+            $('#gclh_search_result_keyword').addClass('gclh_search_primary_result');
+
+            if ( search.match(/^GC[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
+                $('#gclh_search_results li').removeClass('gclh_search_primary_result');
+                link = 'https://coord.info/'+search.toUpperCase();
+                $('#gclh_search_results').append('<ul id="gclh_search_results_gccode"></ul>');
+                gclh_search_build_result( "#gclh_search_results_gccode", 'gclh_search_result_gc_code', link, search.toUpperCase(), 'Geocache', '', "https://www.geocaching.com/images/WptTypes/2.gif" );
+                $('#gclh_search_result_gc_code').addClass('gclh_search_primary_result');
+            } else if (search.match(/^TB[A-Z0-9]{1,10}$/i)) {
+                $('.gclh_search_primary_result').removeClass('gclh_search_primary_result');
+                link = 'https://coord.info/'+search.toUpperCase();
+                $('#gclh_search_results').append('<ul id="gclh_search_results_tb_public"></ul>');
+                gclh_search_build_result( "#gclh_search_results_tb_public", 'gclh_search_result_tb_public', link, search.toUpperCase(), 'Public TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
+                $('#gclh_search_results_tb_public').addClass('gclh_search_primary_result');
+            } else if (search.match(/^[ABCDEFGHJKMNPQRTVWXYZ0-9]{6}$/i) && !search.match(/^(TB|GC)/i) ) {
+                $('.gclh_search_primary_result').removeClass('gclh_search_primary_result');
+                link = 'https://www.geocaching.com/track/details.aspx?tracker='+encodeURIComponent(search.toUpperCase());
+                $('#gclh_search_results').append('<ul id="gclh_search_results_tb_private"></ul>');
+                gclh_search_build_result( "#gclh_search_results_tb_private", 'gclh_search_result_tb_private', link, search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
+                $('#gclh_search_results_tb_private').addClass('gclh_search_primary_result');
+            } else {
+            }
+            $('#gclh_search_results').data('link',link);
+
+        }
+
+
+
+        function gclh_search_add_section( sectionId, parentNode ) {
+            racecondition++;
+            var id = sectionId+"-"+racecondition;
+            var node = $('<ul id="'+id+'"></ul>');
+            parentNode.append(node);
+            return node;
+        }
+
+        function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
+            console.log("gclh_search_add_row");
+            racecondition++;
+            var id = "gclh_search_row-"+racecondition;
+            parentNode.append('<li id="'+id+'"><div style="padding: 0px 0px 0px 0px;"></div></li>');
+            $("#"+id+" > div").append('<a style="float:left;" href="'+link+'"><div style="padding: 10px 0px 10px 10px;"><img src="'+image+'"></div></a>');
+            $("#"+id+" > div").append('<a style="float:left; width:100%;" href="'+link+'"><div style="padding: 10px 0px 10px 0px;">'+primarytext+'&nbsp;&nbsp;<i><span style="color: #888888;">'+secondarytext+'</span></i></div></a>');
+            $("#"+id+" > div").append('<div style="float: left; padding: 0px 10px 0px 0px;">'+context+'</div>');
+            $('#'+id).data('link',link);
+            return $('#'+id); // TODO work with node object
+        }
+
+
+        function gclh_search_add_row_waitloader( parentNode, primarytext ) {
+            var node = gclh_search_add_row( parentNode, 'javascript:void(0);', '<span style="color: #888888;">'+primarytext+'</span>', '', urlImages+"ajax-loader.gif" )
+            node.find("img").css('padding','4px');
+            return node;
+        }
+
+
+
+        function gclh_search_build_result( rootid, _id, link, primarytext, secondarytext, context, image ) {
+            racecondition++;
+            var id = "gclh_search_row-"+racecondition;
+            $(rootid).append('<li id="'+id+'"><div style="padding: 0px 0px 0px 0px;"></div></li>');
+            $("#"+id+" > div").append('<a style="float:left;" href="'+link+'"><div style="padding: 10px 0px 10px 10px;"><img src="'+image+'"></div></a>');
+            $("#"+id+" > div").append('<a style="float:left; width:100%;" href="'+link+'"><div style="padding: 10px 0px 10px 0px;">'+primarytext+'&nbsp;&nbsp;<i><span style="color: #888888;">'+secondarytext+'</span></i></div></a>');
+            $("#"+id+" > div").append('<div style="float: left; padding: 0px 10px 0px 0px;">'+context+'</div>');
+            $('#'+id).data('link',link);
+            return id;
+        }
+
+        function gclh_search_async_request( url, parentNode, handler ) {
+            GM_xmlhttpRequest({
+                method: "GET",
+                url: url,
+                context: { parentNode: parentNode },
+                onload: function(response) {
+                    var parentNode = response.context.parentNode;
+                    console.log(response);
+                    parentNode.find('*').remove();
+                    if (response.responseText) { // todo error handling
+                        json = JSON.parse(response.responseText);
+                        console.log(json);
+                        handler( parentNode, json, parentNode );
+                    }
+                    if ( !parentNode.find('li') ) {
+                        parentNode.hide();
+                    }
+                }
+            });
+        }
+
+
+        function gclh_search_handler_xxx( parentNode, json, parentNode ) {
+            if ( json.status == "success" ) {
+                link = 'https://www.geocaching.com/map/#?ll='+json.data.lat+','+json.data.lng+'&z=16';
+                var RHSFragment = '<a href="'+link+'">Map</a>&nbsp;|&nbsp;<a href="https://www.geocaching.com/play/search@'+json.data.lat+','+json.data.lng+'?origin='+encodeURIComponent(json.data.q)+'">Search</a>';
+                gclh_search_add_row( parentNode, link, json.data.q, json.data.lat+','+json.data.lng, RHSFragment, "https://www.geocaching.com/play/Content/images/search/icon-radius.svg" );
+            }
+        }
+
+        function gclh_search_handler_users( parentNode, json, parentNode ) {
+            for (var i=0; i<json.length; i++) {
+                var link = 'http://www.geocaching.com/profile/Default.aspx?id='+encodeURIComponent(json[i].Id);
+                var RHSFragment = '<a href="https://www.geocaching.com/play/search?ot=4&amp;owner[0]='+encodeURIComponent(json[i].Username)+'">Search</a>&nbsp;|&nbsp;<a href="https://www.geocaching.com/seek/nearest.aspx?u='+encodeURIComponent(json[i].Username)+'">Hides</a>';
+                gclh_search_add_row( parentNode, link, json[i].Username, '', RHSFragment, json[i].AvatarUrl );
+            }
+        }
+
+        function gclh_search_handler_locations( parentNode, json, parentNode ) {
+            for (var i=0; i<json.length; i++) {
+                if ( json[i].id > -1 ) {
+                    var link = "";
+                    var context = "";
+                    switch(json[i].originTreatment) {
+                        case -1: // ???
+                        case 0: // ???
+                            link = "";
+                            break;
+                        case 1: // is a state
+                            link = "https://www.geocaching.com/play/search?r="+json[i].id;
+                            context = "State/Province";
+                            break;
+                        case 2: // is a country
+                            link = "https://www.geocaching.com/play/search?c="+json[i].id;
+                            context = "Country";
+                            break;
+                        case 3: // is a place
+                            link = "https://www.geocaching.com/play/search/?origin="+json[i].displayName+"&g="+json[i].id;
+                            context = "City";
+                            break;
+                        default:
+                            break;
+                    }
+
+                    context =  '<span style="color: #888888;">'+context+'</span>';
+                    gclh_search_add_row( parentNode, link, json[i].displayName, '', context, "https://www.geocaching.com/play/Content/images/search/icon-radius.svg" );
+                }
+            }
+        }
+
+
+        var racecondition = 0;
+        function gclh_search_dynamic (search) {
+
+            if ( 1 && search != "" /* && settings_search_users */ ) {
+                var node = gclh_search_add_section( 'gclh_search_result_users', $('#gclh_search_results') );
+                node = gclh_search_add_row_waitloader( node, 'loading users...' );
+                gclh_search_async_request( 'https://www.geocaching.com/play/search/matching-usernames?input='+ encodeURIComponent(search)+'&count=8', node, gclh_search_handler_users );
+            }
+
+
+
+            if ( 1 && search != "" /* && settings_search_locations */ ) {
+                var node = gclh_search_add_section( 'gclh_search_result_xxx', $('#gclh_search_results') );
+                node = gclh_search_add_row_waitloader( node, 'loading place...' );
+                gclh_search_async_request( 'https://www.geocaching.com/api/geocode?q='+encodeURIComponent(search), node, gclh_search_handler_xxx );
+            }
+
+
+            if ( 1 && search != "" /* && settings_search_locations */ ) {
+                var node = gclh_search_add_section( 'gclh_search_result_locations', $('#gclh_search_results') );
+                node = gclh_search_add_row_waitloader( node, 'loading locations...' );
+                gclh_search_async_request( 'https://www.geocaching.com/play/search/typeahead-complete?query='+encodeURIComponent(search), node, gclh_search_handler_locations );
+            }
+
+
+            // on the 404 we have an access problem
+            if ( 0 && $('.li-user-info')[0] /* && settings_search_recentlies */ ) {
+                $('#gclh_search_results').append('<ul id="gclh_search_result_recentlies"></ul>');
+                // $('#gclh_search_result_recentlies').append('<li><div><img style="padding: 4px;" src="'+ urlImages + 'ajax-loader.gif"><span style="color: #888888;">loading recently viewed caches...</span></div></li>');
+                gclh_search_build_result( '#gclh_search_result_recentlies', 'recentlies-ajax-loader', "javascript:void(0);", '', '<span style="color: #888888;">loading recently viewed caches...</span>', '', urlImages+"ajax-loader.gif" );
+
+                var global_access_token = undefined;
+
+                recentlyviewed( 0 );
+
+                function recentlyviewed( retries ) {
+                    if ( retries > 2 ) {
+                        return;
+                    }
+
+                    if ( global_access_token === undefined || global_access_token['expire_date'] < new Date().getTime() ) {
+                        gclh_GetGcAccessToken( function(r) {
+                            console.log(r);
+                            global_access_token = r;
+                            global_access_token['expire_date'] = new Date(new Date().getTime() + (parseInt(global_access_token.expire_in)-100)*1000);
+                            // setValue("global_access_token", JSON.stringify(global_access_token) );
+                            recentlyviewed( retries+1 );
+                        });
+                    } else {
+                        console.log("Token expire date: "+global_access_token['expire_date']);
+                        console.log(global_access_token);
+                        GM_xmlhttpRequest({
+                            method: "GET",
+                            headers: {
+                                "Authorization": global_access_token.token_type+" "+global_access_token.access_token
+                            },
+                            url: "https://www.geocaching.com/api/proxy/web/v1/activities/account/PRP1KP/recentlyviewed?take=50", // TODO
+                            onload: function(response) {
+                                var items = 0;
+                                $('#gclh_search_result_recentlies *').remove();
+
+                                console.log(response);
+                                if (response.status == 401 ) {
+                                    console.log("**************************");
+                                    global_access_token = undefined;
+                                    recentlyviewed( retries+1 );
+                                    return;
+
+                                }
+                                if (response.status == 200 ) {
+                                    // TODO check response message and return access_token and retry it
+
+                                    json = JSON.parse(response.responseText);
+                                    console.log(json);
+
+                                    for (var i=0; i<json.length; i++) {
+                                        var item = json[i];
+                                        if ( (item.data.name.toLowerCase().indexOf(search.toLowerCase()) != -1 ) ||
+                                             (item.data.geocacheReferenceCode.toLowerCase().indexOf(search.toLowerCase()) != -1 ) ||
+                                             (item.relationships.author.username.toLowerCase().indexOf(search.toLowerCase()) != -1 ) ) {
+                                            link = item.links.self; // 'https://coord.info/'+item.geocacheReferenceCode;
+                                            // var a = addSearchResult( 'gclh_user_recently', link, , '', false, ' );
+                                            // var a= '<li><a href="'+link+'"><div><img src="https://www.geocaching.com/images/WptTypes/'+item.data.cacheTypeId+'.gif">'+item.data.name+'&nbsp;&nbsp;<i><span style="color: #888888;">'+item.relationships.author.username+'</i></span><span style="margin-left:auto; color: #888888;">'+item.data.geocacheReferenceCode+'</span></div></a></li>';
+                                            // $("#gclh_search_result_recentlies").append(a);
+                                            var context =  '<span style="color: #888888;">'+item.data.geocacheReferenceCode+'</span>';
+
+                                            gclh_search_build_result( "#gclh_search_result_recentlies", 'recentlies-'+i, link, item.data.name, item.relationships.author.username, context, "https://www.geocaching.com/images/WptTypes/"+item.data.cacheTypeId+".gif" );
+
+                                            items++;
+                                        }
+                                    }
+                                }
+                                if ( items == 0 ) { $("#gclh_search_recently").hide() };
+
+                            }
+                        });
+                    }
+
+
+
+                }
+            }
+
+
+        }
+
+
 // Remove GC Menüs.
     try {
         var m = $('ul.(Menu|menu) li a.dropdown');
@@ -1437,6 +1825,10 @@ var mainGC = function() {
             // Hover für alle Dropdowns aufbauen.
             buildHover();
 
+            $("#navi_search").click(function(e){
+                 gclh_enhanced_search();
+            });
+	
             if (settings_menu_show_separator) {
                 if (settings_bookmarks_top_menu || settings_change_header_layout == false);  // Navi vertikal
                 else {  // Navi horizontal
@@ -2583,7 +2975,7 @@ var mainGC = function() {
             function addElevationToWaypoints_OpenElevation(responseDetails) {
                 try {
                     context = responseDetails.context;
-                    if ( responseDetails.responseText[0] != '{' ) { 
+                    if ( responseDetails.responseText[0] != '{' ) {
                         // workaround: sometimes OpenElevation answers with an HTML formatted content not with JSON data
                         gclh_log("\naddElevationToWaypoints_OpenElevation():\n- Unexpected response data:"+responseDetails.responseText.substring(0,100)+"…");
                         getElevations(context.retries+1,context.locations);
@@ -12303,5 +12695,23 @@ function getDateDiffString(dateNew, dateOld) {
     strDateDiff = strDateDiff.replace(/,([^,]*)$/, " and$1");
     return strDateDiff;
 }
+
+// Get Geocaching Access Token
+function gclh_GetGcAccessToken( handler ) {
+    console.log("*******************************");
+    setTimeout(function() {
+        $.ajax({
+                type: "POST",
+                url: "/account/oauth/token",
+                timeout: 10000
+            })
+            .done( function(r) {
+                try {
+                    handler(r);
+                } catch(e) {gclh_error("gclh_GetGcAccessToken()",e);}
+            });
+    }, 0);
+}
+
 
 start(this);

@@ -1554,7 +1554,7 @@ var mainGC = function() {
 
 
         function gclh_search_add_row_waitloader( parentNode, primarytext ) {
-            var node = gclh_search_add_row( parentNode, 'javascript:void(0);', '<span style="color: #888888;">'+primarytext+'</span>', '', urlImages+"ajax-loader.gif" )
+            var node = gclh_search_add_row( parentNode, 'javascript:void(0);', '<span style="color: #888888;">'+primarytext+'</span>', '','', urlImages+"ajax-loader.gif" )
             node.find("img").css('padding','4px');
             return node;
         }

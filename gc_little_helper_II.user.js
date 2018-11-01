@@ -1417,7 +1417,7 @@ var mainGC = function() {
 
         var html = "";
         html += '<div id="gclh_search_overlay" align="center">';
-        html += '  <div id="gc_search_container" class="gclh_search_layout" style="box-shadow: 4px 4px 15px black;">';
+        html += '  <div id="gclh_search_container" class="gclh_search_layout" style="box-shadow: 4px 4px 15px black;">';
         html += '    <input id="gclh_search_field" class="gclh_search_field gclh_search_layout" style="" placeholder="GCCode, User, Places, TB Code ..." ></input>';
         html += '    <div id="gclh_search_results" class="gclh_search_layout" style="align: left; padding: 0px; border: 1px #779c11 solid; background-color: #ffffff; box-sizing: border-box;" align="left"></div>';
         html += '  </div>';
@@ -1485,8 +1485,10 @@ var mainGC = function() {
             var search = $('#gclh_search_field').val();
             $('#gclh_search_results *').remove();
             $('#gclh_search_results').data('search',search);
-            if ( search != "" ) { gclh_search_static(search); }
-            gclh_search_dynamic(search);
+            if ( search != "" ) { 
+                gclh_search_static(search); 
+                gclh_search_dynamic(search);
+            }
         }
 
 
@@ -1527,13 +1529,17 @@ var mainGC = function() {
 
 
         function gclh_search_add_section( sectionId, parentNode ) {
+            if ( parentNode === undefined ) {
+                parentNode = $('#gclh_search_results');
+            }
             racecondition++;
-            var id = sectionId+"-"+racecondition;
+            var id = "gclh_search_section_"+sectionId+"-"+racecondition;
             var node = $('<ul id="'+id+'"></ul>');
             parentNode.append(node);
             return node;
         }
 
+        var gclh_search_icon_place = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACDElEQVRIic3VP0wTUQAG8DfcgElHExwcGTowdGBgYHBwdGTo4GLC5RK9GARiTEhT02gIaXRhwaJBFiA2LO+g8Ui4Vq6VKNViKYqhTe1F/EdFa70InNfP6RKS9l3faYx+67v3/V7y7r1H8JdD/jmw+W0X0aKKYDaG7mQY3ckw+tcnES2qyNWM3wesho3r2xSCIkFQJARSEQxszEDOz6JXH4MvIUNQJIxsxfHDPvIGlM0qAqkICBUh52dRtw5cF+DXQnhVf88HWA0bfelxnFKHsbZfYq7MSa5moGtlFIFUBFbDbg9EiyoIFaF8eNG23MnafgmCIuHaywV3YO+wjo7FixjYmOEudzKyFYegSNj5/pENxN9lQaiIZPW1Z+DZ1woIFXHPSLOB8DZFpzqMvcO6Z+DAttC1MoqhwgM2cO7JBHpWb3gud9KXHsfZx7fZwOXNOfi1EH62+Bt40rN6Exdy99nAnTePQKiIfO2t5/KS+Qknli7hVmmZDeRqBggVMW1kPANzu09BqAj98w4bsBo2zmSiOPnwiqeN/nJk4vTyVfTqY02Hremglc0qfAkZ/euT3MD553fhS8gom9WmsZZ30bSRAaEiBgvzbcsHC/MgVMREWWs5zrxNnYluCM83ru+BWwFPeVuAVcRbzgUcLwxmYwhmY9zl3AAATFV0+LUQ/FoIUxWdd9p/8Oj/aX4BXHBmYMd4q5UAAAAASUVORK5CYII=";
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
             console.log("gclh_search_add_row");
             racecondition++;
@@ -1578,7 +1584,7 @@ var mainGC = function() {
                     if (response.responseText) { // todo error handling
                         json = JSON.parse(response.responseText);
                         console.log(json);
-                        handler( parentNode, json, parentNode );
+                        handler( parentNode, json );
                     }
                     if ( !parentNode.find('li') ) {
                         parentNode.hide();
@@ -1587,16 +1593,15 @@ var mainGC = function() {
             });
         }
 
-
-        function gclh_search_handler_xxx( parentNode, json, parentNode ) {
+        function gclh_search_handler_place( parentNode, json ) {
             if ( json.status == "success" ) {
                 link = 'https://www.geocaching.com/map/#?ll='+json.data.lat+','+json.data.lng+'&z=16';
                 var RHSFragment = '<a href="'+link+'">Map</a>&nbsp;|&nbsp;<a href="https://www.geocaching.com/play/search@'+json.data.lat+','+json.data.lng+'?origin='+encodeURIComponent(json.data.q)+'">Search</a>';
-                gclh_search_add_row( parentNode, link, json.data.q, json.data.lat+','+json.data.lng, RHSFragment, "https://www.geocaching.com/play/Content/images/search/icon-radius.svg" );
+                gclh_search_add_row( parentNode, link, json.data.q, json.data.lat+','+json.data.lng, RHSFragment, gclh_search_icon_place );
             }
         }
 
-        function gclh_search_handler_users( parentNode, json, parentNode ) {
+        function gclh_search_handler_users( parentNode, json ) {
             for (var i=0; i<json.length; i++) {
                 var link = 'http://www.geocaching.com/profile/Default.aspx?id='+encodeURIComponent(json[i].Id);
                 var RHSFragment = '<a href="https://www.geocaching.com/play/search?ot=4&amp;owner[0]='+encodeURIComponent(json[i].Username)+'">Search</a>&nbsp;|&nbsp;<a href="https://www.geocaching.com/seek/nearest.aspx?u='+encodeURIComponent(json[i].Username)+'">Hides</a>';
@@ -1604,7 +1609,7 @@ var mainGC = function() {
             }
         }
 
-        function gclh_search_handler_locations( parentNode, json, parentNode ) {
+        function gclh_search_handler_locations( parentNode, json ) {
             for (var i=0; i<json.length; i++) {
                 if ( json[i].id > -1 ) {
                     var link = "";
@@ -1640,24 +1645,21 @@ var mainGC = function() {
         var racecondition = 0;
         function gclh_search_dynamic (search) {
 
-            if ( 1 && search != "" /* && settings_search_users */ ) {
-                var node = gclh_search_add_section( 'gclh_search_result_users', $('#gclh_search_results') );
-                node = gclh_search_add_row_waitloader( node, 'loading users...' );
+            if ( 1 && search != "" /* && settings_gclh_search_users */ ) {
+                var node = gclh_search_add_section( 'users' );
+                gclh_search_add_row_waitloader( node, 'loading users...' );
                 gclh_search_async_request( 'https://www.geocaching.com/play/search/matching-usernames?input='+ encodeURIComponent(search)+'&count=8', node, gclh_search_handler_users );
             }
 
-
-
-            if ( 1 && search != "" /* && settings_search_locations */ ) {
-                var node = gclh_search_add_section( 'gclh_search_result_xxx', $('#gclh_search_results') );
-                node = gclh_search_add_row_waitloader( node, 'loading place...' );
-                gclh_search_async_request( 'https://www.geocaching.com/api/geocode?q='+encodeURIComponent(search), node, gclh_search_handler_xxx );
+            if ( 1 && search != "" /* && settings_gclh_search_place */ ) {
+                var node = gclh_search_add_section( 'place' );
+                gclh_search_add_row_waitloader( node, 'loading place...' );
+                gclh_search_async_request( 'https://www.geocaching.com/api/geocode?q='+encodeURIComponent(search), node, gclh_search_handler_place );
             }
 
-
-            if ( 1 && search != "" /* && settings_search_locations */ ) {
-                var node = gclh_search_add_section( 'gclh_search_result_locations', $('#gclh_search_results') );
-                node = gclh_search_add_row_waitloader( node, 'loading locations...' );
+            if ( 1 && search != "" /* && settings_gclh_search_locations */ ) {
+                var node = gclh_search_add_section( 'locations' );
+                gclh_search_add_row_waitloader( node, 'loading locations...' );
                 gclh_search_async_request( 'https://www.geocaching.com/play/search/typeahead-complete?query='+encodeURIComponent(search), node, gclh_search_handler_locations );
             }
 

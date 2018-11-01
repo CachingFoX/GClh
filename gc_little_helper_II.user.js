@@ -1719,7 +1719,7 @@ var mainGC = function() {
                     }
 
                     context =  '<span style="color: #888888;">'+context+'</span>';
-                    gclh_search_add_row( parentNode, link, json[i].displayName, '', context, "https://www.geocaching.com/play/Content/images/search/icon-radius.svg" );
+                    gclh_search_add_row( parentNode, link, json[i].displayName, context, '', "https://www.geocaching.com/play/Content/images/search/icon-radius.svg" );
                 }
             }
         }

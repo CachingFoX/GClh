@@ -1414,6 +1414,25 @@ var mainGC = function() {
         css += ".gclh_search_layout {"
         css += "  width:750px;";
         css += "}";
+        css += ".gclh_search_row_padding {"
+        css += "  padding-top:0px;";
+        css += "  padding-bottom:0px;";
+        css += "  padding-left:0px;";
+        css += "  padding-right:0px;";
+        css += "}";
+        css += ".gclh_search_row_padding.left {"
+        css += "  padding-left:10px;";
+        css += "}";
+        css += ".gclh_search_row_padding.right {"
+        css += "  padding-right:10px;";
+        css += "}";
+        css += ".gclh_search_row_padding.vertical-xlarge  { padding-top:12px; padding-bottom:12px; }";
+        css += ".gclh_search_row_padding.vertical-large   { padding-top:10px; padding-bottom:10px; }";
+        css += ".gclh_search_row_padding.vertical-regular { padding-top: 8px; padding-bottom: 8px; }";
+        css += ".gclh_search_row_padding.vertical-medium  { padding-top: 6px; padding-bottom: 6px; }";
+        css += ".gclh_search_row_padding.vertical-small   { padding-top: 4px; padding-bottom: 4px; }";
+        css += ".gclh_search_row_padding.vertical-xsmall  { padding-top: 2px; padding-bottom: 2px; }";
+        
 
         appendCssStyle(css, "#gclh_search_background_shadow");
 
@@ -1528,6 +1547,8 @@ var mainGC = function() {
             if ( node !== undefined ) {
                 node.addClass('gclh_search_primary_result');
             }
+
+            gclh_search_adjust_rowheight();
         }
 
 
@@ -1626,7 +1647,16 @@ var mainGC = function() {
             return node;
         }
 
+        function gclh_search_adjust_rowheight() {
+            var sizes = ['','xlarge','large','regular','medium','small','xsmall'];
+            var index = 1; /* settings_gclh_search_rowheight_autoadjust == 0 ? 1 : settings_gclh_search_autoadjust; */ 
 
+            do {
+                $('.gclh_search_row_padding').removeClass('vertical-*');
+                $('.gclh_search_row_padding').addClass('vertical-'+sizes[index]);
+                index++;
+            } while ( /*settings_gclh_search_autoadjust == 0 &&*/ index < sizes.length && ($(window).height() < $('#gclh_search_overlay').height() + $("#gclh_search_overlay").offset().top + 20 ) )
+        }
 
         function gclh_search_async_request( url, parentNode, handler ) {
             GM_xmlhttpRequest({
@@ -1645,6 +1675,7 @@ var mainGC = function() {
                     if ( !parentNode.find('li') ) {
                         parentNode.hide();
                     }
+                    gclh_search_adjust_rowheight();
                 }
             });
         }

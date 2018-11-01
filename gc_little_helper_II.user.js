@@ -1563,11 +1563,7 @@ var mainGC = function() {
             parentNode.append(node);
             return node;
         }
-
-        var gclh_search_icon_geotour = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABqUlEQVRIie3Rv0sbcRzG8YwOVYogSAklQ/4Ahw4uwo0OHRwydHBwaEGkYoI1BhNBtDh4g4VSGlQIBaFKEWNac+YXCeqBGjENPU1SpGmvCBUPQSVoG5K3WyAYjOKJHfzAM31/vHj4GLjlMdwD/z9w8PcEx84cgiyWxRJ38/lP8ubAUNqHVZkhqmXKIu0rGIP26wMn+TPe/4wxkJrHpszSFBumKTZ8oYEgi9R86cKV8mJTZhF3A2RzWnXg1fYnLHE3Latj1EtWnm1OVPy4eWUUQRZpXXtDrb+bobSPxkBvdaAj4SGqZRj5vsjjUP+FB6eFfzzwvyRfLAAw/iNc+tjge3F1oH9nDnPEWXbmUWUaA708lHqIapmbAZUamCNOEkcqH/c2aNt4p28DaV9BkEUAXCkvrpRX3wZP19/iUWXyxQLGoJ3fp4f6AfliAUEWMYUdtG9NYYm7S/d13cG34z2ef/1QWrDuQKW5NtCZnMajynQmpzGFHGRz2qUZTC/QsGQjm9OuBiSOVJ4sv+ZRsI96yYop7Lg0xpCdOn835oiTyV8r1QG95x64e+Acg1U7+uwnCZUAAAAASUVORK5CYII=";
-        var gclh_search_icon_place = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACDElEQVRIic3VP0wTUQAG8DfcgElHExwcGTowdGBgYHBwdGTo4GLC5RK9GARiTEhT02gIaXRhwaJBFiA2LO+g8Ui4Vq6VKNViKYqhTe1F/EdFa70InNfP6RKS9l3faYx+67v3/V7y7r1H8JdD/jmw+W0X0aKKYDaG7mQY3ckw+tcnES2qyNWM3wesho3r2xSCIkFQJARSEQxszEDOz6JXH4MvIUNQJIxsxfHDPvIGlM0qAqkICBUh52dRtw5cF+DXQnhVf88HWA0bfelxnFKHsbZfYq7MSa5moGtlFIFUBFbDbg9EiyoIFaF8eNG23MnafgmCIuHaywV3YO+wjo7FixjYmOEudzKyFYegSNj5/pENxN9lQaiIZPW1Z+DZ1woIFXHPSLOB8DZFpzqMvcO6Z+DAttC1MoqhwgM2cO7JBHpWb3gud9KXHsfZx7fZwOXNOfi1EH62+Bt40rN6Exdy99nAnTePQKiIfO2t5/KS+Qknli7hVmmZDeRqBggVMW1kPANzu09BqAj98w4bsBo2zmSiOPnwiqeN/nJk4vTyVfTqY02Hremglc0qfAkZ/euT3MD553fhS8gom9WmsZZ30bSRAaEiBgvzbcsHC/MgVMREWWs5zrxNnYluCM83ru+BWwFPeVuAVcRbzgUcLwxmYwhmY9zl3AAATFV0+LUQ/FoIUxWdd9p/8Oj/aX4BXHBmYMd4q5UAAAAASUVORK5CYII=";
-        var gclh_search_icon_cache_container = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABYklEQVRIie2VMUvDUBSFM3Zw6ODQMYODo6NjfkKHDh0cMpilCFXiEBAhuDhkcCqWKgQ3wS0WayHaQnhLW4yCYoqINUsFI6WEYm2ox8kQTSOJ1UHpgTOc5X1c7uE+Cr8sagIIDXgeDqA93aBiNce27fT9gNWrA1AK9yNONwp+AKvLmNc2cdezxnKqngdDJD9g8XwP8VIWDJHGcqLMjwbUOy0wRAKtChANBaKhgFYFMERy82cnazlQCufmeCmLZC2Hw4cLPwAAREPBXHXDzQyRsHy5H9gQ2SSgFM7NtCpg61Yd3aJ3gHe8dKOAVD0f2BZWl5Eo8x8AsknCAypWE4kyH9iWWDGDnXvt+wAAcF6HgY3x9j00wLuDqAq1g78N2G5VES9l0Rn0Ij9uO33Eipmvd/D4YmP6eAWzp+tgdTmSZ07WMHW0hHa/GwwAgGu7DVaXI5+IhbNd6F3TN9k/+nAmgCC9AZmxHVvb9X0gAAAAAElFTkSuQmCC";
-        
+       
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
             var options = {
                 link : link
@@ -1729,7 +1725,6 @@ var mainGC = function() {
         }
 
         function gclh_search_dynamic (search) {
-
             if ( 1 && search != "" /* && settings_gclh_search_users */ ) {
                 var node = gclh_search_add_section( 'users' );
                 gclh_search_add_row_waitloader( node, 'loading users...' );

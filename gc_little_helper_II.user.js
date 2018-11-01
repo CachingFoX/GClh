@@ -1548,15 +1548,37 @@ var mainGC = function() {
         var gclh_search_icon_cache_container = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABYklEQVRIie2VMUvDUBSFM3Zw6ODQMYODo6NjfkKHDh0cMpilCFXiEBAhuDhkcCqWKgQ3wS0WayHaQnhLW4yCYoqINUsFI6WEYm2ox8kQTSOJ1UHpgTOc5X1c7uE+Cr8sagIIDXgeDqA93aBiNce27fT9gNWrA1AK9yNONwp+AKvLmNc2cdezxnKqngdDJD9g8XwP8VIWDJHGcqLMjwbUOy0wRAKtChANBaKhgFYFMERy82cnazlQCufmeCmLZC2Hw4cLPwAAREPBXHXDzQyRsHy5H9gQ2SSgFM7NtCpg61Yd3aJ3gHe8dKOAVD0f2BZWl5Eo8x8AsknCAypWE4kyH9iWWDGDnXvt+wAAcF6HgY3x9j00wLuDqAq1g78N2G5VES9l0Rn0Ij9uO33Eipmvd/D4YmP6eAWzp+tgdTmSZ07WMHW0hHa/GwwAgGu7DVaXI5+IhbNd6F3TN9k/+nAmgCC9AZmxHVvb9X0gAAAAAElFTkSuQmCC";
         
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
-            console.log("gclh_search_add_row");
-            gclh_search_unique_id++;
-            var id = "gclh_search_row-"+gclh_search_unique_id;
-            parentNode.append('<li id="'+id+'"><div style="padding: 0px 0px 0px 0px;"></div></li>');
-            $("#"+id+" > div").append('<a style="float:left;" href="'+link+'"><div style="padding: 10px 0px 10px 10px;"><img src="'+image+'"></div></a>');
-            $("#"+id+" > div").append('<a style="float:left; width:100%;" href="'+link+'"><div style="padding: 10px 0px 10px 0px;">'+primarytext+'&nbsp;&nbsp;<i><span style="color: #888888;">'+secondarytext+'</span></i></div></a>');
-            $("#"+id+" > div").append('<div style="float: left; padding: 0px 10px 0px 0px;">'+context+'</div>');
-            $('#'+id).data('link',link);
-            return $('#'+id); // TODO work with node object
+            var options = {
+                link : link
+            };
+
+            if ( image !== undefined ) {
+                options.left = {
+                    linked: true,
+                    htmlContent : '<img style="margin: 0px;" src="'+image+'">'
+                };
+            }
+
+            if ( primarytext !== undefined ) {
+                // style = 'style="' + ( options.lefthand.style !== undefined ) ? options.lefthand.style : '' + '"';
+                // class = 'class="' + ( options.lefthand.class !== undefined ) ? options.lefthand.class : '' + '"'; 
+                var t1 = '<span>'+primarytext+'</span>';
+                var t2 = ( secondarytext !== undefined ) ? '<span style="margin-left: 0.5em; color: #888888; font-style: italic;">'+secondarytext+'</span>' : '';
+                
+                options.center = {
+                    linked : true,
+                    htmlContent : t1+t2
+                };
+            }
+
+            if ( context !== undefined ) {
+                options.right = {
+                    linked: false,
+                    htmlContent : context
+                };
+            }
+            
+            return gclh_search_add_row4( parentNode, options );
         }
 
         function gclh_search_add_row4( parentNode, options ) {

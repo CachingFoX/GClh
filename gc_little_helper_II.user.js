@@ -1357,6 +1357,8 @@ var mainGC = function() {
     } catch(e) {gclh_error("New width",e);}
 
 // Enhanced All in one search
+    var gclh_search_unique_id = 0;
+
     function gclh_enhanced_search() {
 
         $('body').append('<div id="gclh_search_background_shadow" style="z-index:1000; width: 100%; height: 100%; background-color: #000000; position:fixed; top: 0; left: 0; opacity: 0.5; filter: alpha(opacity=50);"></div>');
@@ -1491,39 +1493,38 @@ var mainGC = function() {
             }
         }
 
+        function gclh_search_remove_default_marker() {
+            $('#gclh_search_results li').removeClass('gclh_search_primary_result');
+        }
 
 
         function gclh_search_static(search) {
             // static entries
+            var node = undefined;
+
             var link = 'https://www.geocaching.com/play/search?kw='+encodeURIComponent(search);
 
-            var node = gclh_search_add_section( 'gclh_search_results_keyword', $('#gclh_search_results'));
-            gclh_search_add_row( node, link, search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
-
-            $('#gclh_search_result_keyword').addClass('gclh_search_primary_result');
+            node = gclh_search_add_section( 'keyword' );
+            node = gclh_search_add_row( node, link, search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
 
             if ( search.match(/^GC[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
-                $('#gclh_search_results li').removeClass('gclh_search_primary_result');
                 link = 'https://coord.info/'+search.toUpperCase();
-                $('#gclh_search_results').append('<ul id="gclh_search_results_gccode"></ul>');
-                gclh_search_build_result( "#gclh_search_results_gccode", 'gclh_search_result_gc_code', link, search.toUpperCase(), 'Geocache', '', "https://www.geocaching.com/images/WptTypes/2.gif" );
-                $('#gclh_search_result_gc_code').addClass('gclh_search_primary_result');
+                node = gclh_search_add_section( 'geocache' );
+                node = gclh_search_add_row( node, link, search.toUpperCase(), 'Geocache', '', gclh_search_icon_cache_container );
             } else if (search.match(/^TB[A-Z0-9]{1,10}$/i)) {
-                $('.gclh_search_primary_result').removeClass('gclh_search_primary_result');
-                link = 'https://coord.info/'+search.toUpperCase();
-                $('#gclh_search_results').append('<ul id="gclh_search_results_tb_public"></ul>');
-                gclh_search_build_result( "#gclh_search_results_tb_public", 'gclh_search_result_tb_public', link, search.toUpperCase(), 'Public TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
-                $('#gclh_search_results_tb_public').addClass('gclh_search_primary_result');
+                node = gclh_search_add_section( 'trackable_public' );
+                node = gclh_search_add_row( node, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Public TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );                
             } else if (search.match(/^[ABCDEFGHJKMNPQRTVWXYZ0-9]{6}$/i) && !search.match(/^(TB|GC)/i) ) {
-                $('.gclh_search_primary_result').removeClass('gclh_search_primary_result');
                 link = 'https://www.geocaching.com/track/details.aspx?tracker='+encodeURIComponent(search.toUpperCase());
-                $('#gclh_search_results').append('<ul id="gclh_search_results_tb_private"></ul>');
-                gclh_search_build_result( "#gclh_search_results_tb_private", 'gclh_search_result_tb_private', link, search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
-                $('#gclh_search_results_tb_private').addClass('gclh_search_primary_result');
+                node = gclh_search_add_section( 'trackable_private' );
+                node = gclh_search_add_row( node, link, search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
             } else {
             }
-            $('#gclh_search_results').data('link',link);
 
+            gclh_search_remove_default_marker();
+            if ( node !== undefined ) {
+                node.addClass('gclh_search_primary_result');
+            }
         }
 
 
@@ -1532,14 +1533,16 @@ var mainGC = function() {
             if ( parentNode === undefined ) {
                 parentNode = $('#gclh_search_results');
             }
-            racecondition++;
-            var id = "gclh_search_section_"+sectionId+"-"+racecondition;
+            gclh_search_unique_id++;
+            var id = "gclh_search_section_"+sectionId+"-"+gclh_search_unique_id;
             var node = $('<ul id="'+id+'"></ul>');
             parentNode.append(node);
             return node;
         }
 
         var gclh_search_icon_place = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAACDElEQVRIic3VP0wTUQAG8DfcgElHExwcGTowdGBgYHBwdGTo4GLC5RK9GARiTEhT02gIaXRhwaJBFiA2LO+g8Ui4Vq6VKNViKYqhTe1F/EdFa70InNfP6RKS9l3faYx+67v3/V7y7r1H8JdD/jmw+W0X0aKKYDaG7mQY3ckw+tcnES2qyNWM3wesho3r2xSCIkFQJARSEQxszEDOz6JXH4MvIUNQJIxsxfHDPvIGlM0qAqkICBUh52dRtw5cF+DXQnhVf88HWA0bfelxnFKHsbZfYq7MSa5moGtlFIFUBFbDbg9EiyoIFaF8eNG23MnafgmCIuHaywV3YO+wjo7FixjYmOEudzKyFYegSNj5/pENxN9lQaiIZPW1Z+DZ1woIFXHPSLOB8DZFpzqMvcO6Z+DAttC1MoqhwgM2cO7JBHpWb3gud9KXHsfZx7fZwOXNOfi1EH62+Bt40rN6Exdy99nAnTePQKiIfO2t5/KS+Qknli7hVmmZDeRqBggVMW1kPANzu09BqAj98w4bsBo2zmSiOPnwiqeN/nJk4vTyVfTqY02Hremglc0qfAkZ/euT3MD553fhS8gom9WmsZZ30bSRAaEiBgvzbcsHC/MgVMREWWs5zrxNnYluCM83ru+BWwFPeVuAVcRbzgUcLwxmYwhmY9zl3AAATFV0+LUQ/FoIUxWdd9p/8Oj/aX4BXHBmYMd4q5UAAAAASUVORK5CYII=";
+        var gclh_search_icon_cache_container = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAABYklEQVRIie2VMUvDUBSFM3Zw6ODQMYODo6NjfkKHDh0cMpilCFXiEBAhuDhkcCqWKgQ3wS0WayHaQnhLW4yCYoqINUsFI6WEYm2ox8kQTSOJ1UHpgTOc5X1c7uE+Cr8sagIIDXgeDqA93aBiNce27fT9gNWrA1AK9yNONwp+AKvLmNc2cdezxnKqngdDJD9g8XwP8VIWDJHGcqLMjwbUOy0wRAKtChANBaKhgFYFMERy82cnazlQCufmeCmLZC2Hw4cLPwAAREPBXHXDzQyRsHy5H9gQ2SSgFM7NtCpg61Yd3aJ3gHe8dKOAVD0f2BZWl5Eo8x8AsknCAypWE4kyH9iWWDGDnXvt+wAAcF6HgY3x9j00wLuDqAq1g78N2G5VES9l0Rn0Ij9uO33Eipmvd/D4YmP6eAWzp+tgdTmSZ07WMHW0hHa/GwwAgGu7DVaXI5+IhbNd6F3TN9k/+nAmgCC9AZmxHVvb9X0gAAAAAElFTkSuQmCC";
+        
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
             console.log("gclh_search_add_row");
             racecondition++;
@@ -1552,25 +1555,52 @@ var mainGC = function() {
             return $('#'+id); // TODO work with node object
         }
 
+        function gclh_search_add_row4( parentNode, options ) {
+            var x = "";
+            var rowContainer = $('<div style="padding: 0px;"></div>');
 
-        function gclh_search_add_row_waitloader( parentNode, primarytext ) {
-            var node = gclh_search_add_row( parentNode, 'javascript:void(0);', '<span style="color: #888888;">'+primarytext+'</span>', '','', urlImages+"ajax-loader.gif" )
-            node.find("img").css('padding','4px');
+            if ( options.left !== undefined ) {
+                x = '<div class="gclh_search_row_padding right left top">'+options.left.htmlContent+'</div>';   
+                if ( options.left.linked == true && options.link !== undefined ) x = '<a style="float:left;" href="'+options.link+'">' + x + '</a>'; 
+                rowContainer.append(x);
+            }
+            if ( options.center !== undefined ) {
+                x = '<div class="gclh_search_row_padding vertical-regular" width="100%;">'+options.center.htmlContent+'</div>';   
+                if ( options.center.linked == true && options.link !== undefined ) x = '<a style="float:left; width: 100%;" href="'+options.link+'">' + x + '</a>'; 
+                rowContainer.append(x);
+            }
+            if ( options.right !== undefined ) {
+                x = '<div class="gclh_search_row_padding right left">'+options.right.htmlContent+'</div>';   
+                if ( options.right.linked == true && options.link !== undefined ) x = '<a style="float:left;" href="'+options.link+'">' + x + '</a>'; 
+                rowContainer.append(x);
+            }
+
+            // -------------------------------
+            gclh_search_unique_id++;
+            var row = $('<li id="gclh_search_row-'+gclh_search_unique_id+'"></li>');
+            row.data('link',link);
+            row.append(rowContainer);
+
+            parentNode.append(row);
+            return a; 
+        }
+
+        function gclh_search_add_row_waitloader( parentNode, text ) {
+            var options = {
+                left : {
+                    linked: false,
+                    htmlContent : '<img style="margin: 0px; padding: 4px;" src="'+urlImages+'ajax-loader.gif">'
+                },
+                center : {
+                    linked: false,
+                    htmlContent : '<span>'+text+'</span>'
+                }
+            };
+            var node = gclh_search_add_row4( parentNode, options );
             return node;
         }
 
 
-
-        function gclh_search_build_result( rootid, _id, link, primarytext, secondarytext, context, image ) {
-            racecondition++;
-            var id = "gclh_search_row-"+racecondition;
-            $(rootid).append('<li id="'+id+'"><div style="padding: 0px 0px 0px 0px;"></div></li>');
-            $("#"+id+" > div").append('<a style="float:left;" href="'+link+'"><div style="padding: 10px 0px 10px 10px;"><img src="'+image+'"></div></a>');
-            $("#"+id+" > div").append('<a style="float:left; width:100%;" href="'+link+'"><div style="padding: 10px 0px 10px 0px;">'+primarytext+'&nbsp;&nbsp;<i><span style="color: #888888;">'+secondarytext+'</span></i></div></a>');
-            $("#"+id+" > div").append('<div style="float: left; padding: 0px 10px 0px 0px;">'+context+'</div>');
-            $('#'+id).data('link',link);
-            return id;
-        }
 
         function gclh_search_async_request( url, parentNode, handler ) {
             GM_xmlhttpRequest({
@@ -1668,7 +1698,7 @@ var mainGC = function() {
             if ( 0 && $('.li-user-info')[0] /* && settings_search_recentlies */ ) {
                 $('#gclh_search_results').append('<ul id="gclh_search_result_recentlies"></ul>');
                 // $('#gclh_search_result_recentlies').append('<li><div><img style="padding: 4px;" src="'+ urlImages + 'ajax-loader.gif"><span style="color: #888888;">loading recently viewed caches...</span></div></li>');
-                gclh_search_build_result( '#gclh_search_result_recentlies', 'recentlies-ajax-loader', "javascript:void(0);", '', '<span style="color: #888888;">loading recently viewed caches...</span>', '', urlImages+"ajax-loader.gif" );
+                // gclh_search_build_result( '#gclh_search_result_recentlies', 'recentlies-ajax-loader', "javascript:void(0);", '', '<span style="color: #888888;">loading recently viewed caches...</span>', '', urlImages+"ajax-loader.gif" );
 
                 var global_access_token = undefined;
 
@@ -1725,7 +1755,7 @@ var mainGC = function() {
                                             // $("#gclh_search_result_recentlies").append(a);
                                             var context =  '<span style="color: #888888;">'+item.data.geocacheReferenceCode+'</span>';
 
-                                            gclh_search_build_result( "#gclh_search_result_recentlies", 'recentlies-'+i, link, item.data.name, item.relationships.author.username, context, "https://www.geocaching.com/images/WptTypes/"+item.data.cacheTypeId+".gif" );
+                                            // gclh_search_build_result( "#gclh_search_result_recentlies", 'recentlies-'+i, link, item.data.name, item.relationships.author.username, context, "https://www.geocaching.com/images/WptTypes/"+item.data.cacheTypeId+".gif" );
 
                                             items++;
                                         }

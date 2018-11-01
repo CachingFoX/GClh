@@ -1625,7 +1625,7 @@ var mainGC = function() {
             row.append(rowContainer);
 
             parentNode.append(row);
-            return a; 
+            return row; 
         }
 
         function gclh_search_add_row_waitloader( parentNode, text ) {

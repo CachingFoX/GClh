@@ -1595,37 +1595,7 @@ var mainGC = function() {
                 };
             }
             
-            return gclh_search_add_row4( parentNode, options );
-        }
-
-        function gclh_search_add_row4( parentNode, options ) {
-            var x = "";
-            var rowContainer = $('<div style="padding: 0px;"></div>');
-
-            if ( options.left !== undefined ) {
-                x = '<div class="gclh_search_row_padding right left top">'+options.left.htmlContent+'</div>';   
-                if ( options.left.linked == true && options.link !== undefined ) x = '<a style="float:left;" href="'+options.link+'">' + x + '</a>'; 
-                rowContainer.append(x);
-            }
-            if ( options.center !== undefined ) {
-                x = '<div class="gclh_search_row_padding vertical-regular" width="100%;">'+options.center.htmlContent+'</div>';   
-                if ( options.center.linked == true && options.link !== undefined ) x = '<a style="float:left; width: 100%;" href="'+options.link+'">' + x + '</a>'; 
-                rowContainer.append(x);
-            }
-            if ( options.right !== undefined ) {
-                x = '<div class="gclh_search_row_padding right left">'+options.right.htmlContent+'</div>';   
-                if ( options.right.linked == true && options.link !== undefined ) x = '<a style="float:left;" href="'+options.link+'">' + x + '</a>'; 
-                rowContainer.append(x);
-            }
-
-            // -------------------------------
-            gclh_search_unique_id++;
-            var row = $('<li id="gclh_search_row-'+gclh_search_unique_id+'"></li>');
-            row.data('link',link);
-            row.append(rowContainer);
-
-            parentNode.append(row);
-            return row; 
+            return gclh_search_add_basic_row( parentNode, options );
         }
 
         function gclh_search_add_row_waitloader( parentNode, text ) {
@@ -1639,8 +1609,38 @@ var mainGC = function() {
                     htmlContent : '<span>'+text+'</span>'
                 }
             };
-            var node = gclh_search_add_row4( parentNode, options );
+            var node = gclh_search_add_basic_row( parentNode, options );
             return node;
+        }
+
+        function gclh_search_add_basic_row( parentNode, options ) {
+            var htmlContent = "";
+            var rowContainer = $('<div style="padding: 0px;"></div>');
+
+            if ( options.left !== undefined ) {
+                htmlContent = '<div class="gclh_search_row_padding right left top">'+options.left.htmlContent+'</div>';
+                if ( options.left.linked == true && options.link !== undefined ) htmlContent = '<a style="float:left;" href="'+options.link+'">' + htmlContent + '</a>';
+                rowContainer.append(htmlContent);
+            }
+            if ( options.center !== undefined ) {
+                htmlContent = '<div class="gclh_search_row_padding vertical-regular" width="100%;">'+options.center.htmlContent+'</div>';
+                if ( options.center.linked == true && options.link !== undefined ) htmlContent = '<a style="float:left; width: 100%;" href="'+options.link+'">' + htmlContent + '</a>'; 
+                rowContainer.append(htmlContent);
+            }
+            if ( options.right !== undefined ) {
+                htmlContent = '<div class="gclh_search_row_padding right left">'+options.right.htmlContent+'</div>';
+                if ( options.right.linked == true && options.link !== undefined ) htmlContent = '<a style="float:left;" href="'+options.link+'">' + htmlContent + '</a>';
+                rowContainer.append(htmlContent);
+            }
+
+            // -------------------------------
+            gclh_search_unique_id++;
+            var row = $('<li id="gclh_search_row-'+gclh_search_unique_id+'"></li>');
+            row.data('link',link);
+            row.append(rowContainer);
+
+            parentNode.append(row);
+            return row; 
         }
 
         function gclh_search_adjust_rowheight() {

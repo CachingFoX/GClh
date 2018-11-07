@@ -1586,7 +1586,7 @@ var mainGC = function() {
             if ( image !== undefined ) {
                 options.left = {
                     linked: true,
-                    htmlContent : gclh_search_helper_html_element( 'img', '', { 'style':'margin: 0px;', 'src': image } )
+                    htmlContent : gclh_search_helper_html_element( 'img', '', { 'style':'margin: 0px;', 'src': image } ),
                 };
             }
 
@@ -1614,11 +1614,11 @@ var mainGC = function() {
             var options = {
                 left : {
                     linked: false,
-                    htmlContent : '<img style="margin: 0px; padding: 4px;" src="'+urlImages+'ajax-loader.gif">'
+                    htmlContent : gclh_search_helper_html_element( 'img', '', { 'style':'margin: 0px; padding: 4px;', 'src': urlImages+'ajax-loader.gif' } ),
                 },
                 center : {
                     linked: false,
-                    htmlContent : '<span>'+text+'</span>'
+                    htmlContent : gclh_search_helper_html_element( 'span', text ),
                 }
             };
             var node = gclh_search_add_basic_row( parentNode, options );

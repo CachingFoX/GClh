@@ -1439,7 +1439,7 @@ var mainGC = function() {
         var html = "";
         html += '<div id="gclh_search_overlay" align="center">';
         html += '  <div id="gclh_search_container" class="gclh_search_layout" style="box-shadow: 4px 4px 15px black;">';
-        html += '    <input id="gclh_search_field" class="gclh_search_field gclh_search_layout" style="" placeholder="GCCode, User, Places, TB Code ..." ></input>';
+        html += '    <input id="gclh_search_field" class="gclh_search_field gclh_search_layout" style="" placeholder="GC/TB/TL/GL/GT-Code, User name, Places, Keyword, &hellip;" ></input>';
         html += '    <div id="gclh_search_results" class="gclh_search_layout" style="align: left; padding: 0px; border: 1px #779c11 solid; background-color: #ffffff; box-sizing: border-box;" align="left"></div>';
         html += '  </div>';
         html += '  <div style="height: 10px;"></div>';

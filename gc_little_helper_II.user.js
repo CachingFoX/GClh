@@ -1526,10 +1526,8 @@ var mainGC = function() {
             var section = undefined;
             var row = undefined;
 
-            var link = 'https://www.geocaching.com/play/search?kw='+encodeURIComponent(search);
-
             section = gclh_search_add_section( 'keyword' );
-            row = gclh_search_add_row( section, link, search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
+            row = gclh_search_add_row( section, 'https://www.geocaching.com/play/search?kw='+encodeURIComponent(search), search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
 
             if ( search.match(/^GC[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
                 section = gclh_search_add_section( 'geocache' );
@@ -1544,9 +1542,8 @@ var mainGC = function() {
                 section = gclh_search_add_section( 'trackable_public' );
                 row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Public TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );                
             } else if (search.match(/^[ABCDEFGHJKMNPQRTVWXYZ0-9]{6}$/i) && !search.match(/^(GC|GT|TB|TL)/i) ) {
-                link = 'https://www.geocaching.com/track/details.aspx?tracker='+encodeURIComponent(search.toUpperCase());
                 section = gclh_search_add_section( 'trackable_private' );
-                row = gclh_search_add_row( section, link, search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
+                row = gclh_search_add_row( section, 'https://www.geocaching.com/track/details.aspx?tracker='+encodeURIComponent(search.toUpperCase()), search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
             } else {
             }
 

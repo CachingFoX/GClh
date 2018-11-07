@@ -1481,8 +1481,8 @@ var mainGC = function() {
                 index = (index+(( e.which == 40 )?1:-1));
                 index = index > 0 ? index%length:length-1;
 
-                $('#gclh_search_results li').removeClass('gclh_search_primary_result');
-                rows.eq(index).addClass('gclh_search_primary_result');
+                gclh_search_remove_default_marker();
+                gclh_search_set_default_marker(rows.eq(index));
 
                 return;
             }
@@ -1515,7 +1515,11 @@ var mainGC = function() {
         function gclh_search_remove_default_marker() {
             $('#gclh_search_results li').removeClass('gclh_search_primary_result');
         }
-
+        function gclh_search_set_default_marker(node) {
+            if ( node !== undefined ) {
+                node.addClass('gclh_search_primary_result');
+            }
+        }
 
         function gclh_search_static(search) {
             // static entries
@@ -1545,9 +1549,7 @@ var mainGC = function() {
             }
 
             gclh_search_remove_default_marker();
-            if ( node !== undefined ) {
-                node.addClass('gclh_search_primary_result');
-            }
+            gclh_search_set_default_marker(row);
 
             gclh_search_adjust_rowheight();
         }

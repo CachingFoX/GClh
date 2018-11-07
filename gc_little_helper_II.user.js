@@ -1564,7 +1564,18 @@ var mainGC = function() {
             parentNode.append(node);
             return node;
         }
-       
+
+        function gclh_search_helper_html_element( element, content, attributes ) {
+            var htmlAttributes = '';
+            if ( attributes !== undefined ) {
+                for ( attribute in attributes ) {
+                    htmlAttributes += ' '+attribute+'="'+attributes[attribute]+'"';
+                }
+            }
+            var html = '<'+element+htmlAttributes+'>'+content+'</'+element+'>';
+            return html;
+        }        
+
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
             var options = {};
 
@@ -1575,16 +1586,14 @@ var mainGC = function() {
             if ( image !== undefined ) {
                 options.left = {
                     linked: true,
-                    htmlContent : '<img style="margin: 0px;" src="'+image+'">'
+                    htmlContent : gclh_search_helper_html_element( 'img', '', { 'style':'margin: 0px;', 'src': image } )
                 };
             }
 
             if ( primarytext !== undefined ) {
-                // style = 'style="' + ( options.lefthand.style !== undefined ) ? options.lefthand.style : '' + '"';
-                // class = 'class="' + ( options.lefthand.class !== undefined ) ? options.lefthand.class : '' + '"'; 
-                var t1 = '<span>'+primarytext+'</span>';
-                var t2 = ( secondarytext !== undefined ) ? '<span style="margin-left: 0.5em; color: #888888; font-style: italic;">'+secondarytext+'</span>' : '';
-                
+                var t1 = gclh_search_helper_html_element( 'span', primarytext );
+                var t2 = gclh_search_helper_html_element( 'span', secondarytext, { 'style': 'margin-left: 0.5em; color: #888888; font-style: italic;' } );
+
                 options.center = {
                     linked : true,
                     htmlContent : t1+t2

@@ -1648,7 +1648,7 @@ var mainGC = function() {
             // -------------------------------
             gclh_search_unique_id++;
             var row = $('<li id="gclh_search_row-'+gclh_search_unique_id+'"></li>');
-            row.data('link',link);
+            row.data('link',options.link);
             row.append(rowContainer);
 
             parentNode.append(row);
@@ -1690,7 +1690,7 @@ var mainGC = function() {
 
         function gclh_search_handler_place( parentNode, json ) {
             if ( json.status == "success" ) {
-                link = 'https://www.geocaching.com/map/#?ll='+json.data.lat+','+json.data.lng+'&z=16';
+                var link = 'https://www.geocaching.com/map/#?ll='+json.data.lat+','+json.data.lng+'&z=16';
                 var RHSFragment = '<a href="'+link+'">Map</a>&nbsp;|&nbsp;<a href="https://www.geocaching.com/play/search@'+json.data.lat+','+json.data.lng+'?origin='+encodeURIComponent(json.data.q)+'">Search</a>';
                 gclh_search_add_row( parentNode, link, json.data.q, json.data.lat+','+json.data.lng, RHSFragment, gclh_search_icon_place );
             }

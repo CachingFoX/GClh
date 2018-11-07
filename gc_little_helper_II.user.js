@@ -1532,16 +1532,19 @@ var mainGC = function() {
             if ( search.match(/^GC[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
                 section = gclh_search_add_section( 'geocache' );
                 row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Geocache', '', gclh_search_icon_cache_container );
+            } else if ( search.match(/^GL[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
+                section = gclh_search_add_section( 'log' );
+                row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Geocache Log', '', gclh_search_icon_pencil );
             } else if ( search.match(/^TL[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
                 section = gclh_search_add_section( 'log' );
-                row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Log', '', '' );
+                row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Trackable Log', '', gclh_search_icon_pencil );
             } else if ( search.match(/^GT[ABCDEF0-9]{1,2}$/i) ) {
                 section = gclh_search_add_section( 'gctour' );
                 row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Geotour', '', gclh_search_icon_geotour );
             } else if (search.match(/^TB[A-Z0-9]{1,10}$/i)) {
                 section = gclh_search_add_section( 'trackable_public' );
                 row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Public TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );                
-            } else if (search.match(/^[ABCDEFGHJKMNPQRTVWXYZ0-9]{6}$/i) && !search.match(/^(GC|GT|TB|TL)/i) ) {
+            } else if (search.match(/^[ABCDEFGHJKMNPQRTVWXYZ0-9]{6}$/i) && !search.match(/^(GC|GL|GT|TB|TL)/i) ) {
                 section = gclh_search_add_section( 'trackable_private' );
                 row = gclh_search_add_row( section, 'https://www.geocaching.com/track/details.aspx?tracker='+encodeURIComponent(search.toUpperCase()), search.toUpperCase(), 'Private TB Code', '', "https://www.geocaching.com/images/WptTypes/21.gif" );
             } else {

@@ -1513,7 +1513,7 @@ var mainGC = function() {
         }
 
         function gclh_search_remove_default_marker() {
-            $('#gclh_search_results li').removeClass('gclh_search_primary_result');
+            $('.gclh_search_primary_result').removeClass('gclh_search_primary_result');
         }
         function gclh_search_set_default_marker(node) {
             if ( node !== undefined ) {

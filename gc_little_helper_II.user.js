@@ -1479,7 +1479,7 @@ var mainGC = function() {
                 var index = getIndexOfSelectedRow(rows);
 
                 index = (index+(( e.which == 40 )?1:-1));
-                index = index > 0 ? index%length:length-1;
+                index = index >= 0 ? index%length:length-1;
 
                 gclh_search_remove_default_marker();
                 gclh_search_set_default_marker(rows.eq(index));

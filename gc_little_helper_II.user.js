@@ -1532,9 +1532,8 @@ var mainGC = function() {
             row = gclh_search_add_row( section, link, search, 'Keyword', '', "https://www.geocaching.com/play/Content/images/search/icon-search.svg" );
 
             if ( search.match(/^GC[ABCDEFGHJKMNPQRTVWXYZ0-9]{1,10}$/i) ) {
-                link = 'https://coord.info/'+search.toUpperCase();
                 section = gclh_search_add_section( 'geocache' );
-                row = gclh_search_add_row( section, link, search.toUpperCase(), 'Geocache', '', gclh_search_icon_cache_container );
+                row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Geocache', '', gclh_search_icon_cache_container );
             } else if ( search.match(/^GT[ABCDEF0-9]{1,2}$/i) ) {
                 section = gclh_search_add_section( 'gctour' );
                 row = gclh_search_add_row( section, 'https://coord.info/'+search.toUpperCase(), search.toUpperCase(), 'Geotour', '', gclh_search_icon_geotour );

@@ -1663,7 +1663,9 @@ var mainGC = function() {
             var index = 1; /* settings_gclh_search_rowheight_autoadjust == 0 ? 1 : settings_gclh_search_autoadjust; */ 
 
             do {
-                $('.gclh_search_row_padding').removeClass('vertical-*');
+                $(".gclh_search_row_padding").removeClass (function (index, className) {
+                    return (className.match (/^vertical-\S+/g) || []).join(' ');
+                });
                 $('.gclh_search_row_padding').addClass('vertical-'+sizes[index]);
                 index++;
             } while ( /*settings_gclh_search_autoadjust == 0 &&*/ index < sizes.length && ($(window).height() < $('#gclh_search_overlay').height() + $("#gclh_search_overlay").offset().top + 20 ) )

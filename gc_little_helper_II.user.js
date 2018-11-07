@@ -1549,7 +1549,6 @@ var mainGC = function() {
 
             gclh_search_remove_default_marker();
             gclh_search_set_default_marker(row);
-
             gclh_search_adjust_rowheight();
         }
 
@@ -1567,9 +1566,11 @@ var mainGC = function() {
         }
        
         function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
-            var options = {
-                link : link
-            };
+            var options = {};
+
+            if ( link !== undefined ) {
+                options.link = link;
+            }
 
             if ( image !== undefined ) {
                 options.left = {

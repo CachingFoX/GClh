@@ -1576,7 +1576,7 @@ var mainGC = function() {
             return html;
         }        
 
-        function gclh_search_add_row( parentNode, link, primarytext, secondarytext, context, image ) {
+        function gclh_search_add_row( parentNode, link, text, secondarytext, context, image ) {
             var options = {};
 
             if ( link !== undefined ) {
@@ -1590,8 +1590,8 @@ var mainGC = function() {
                 };
             }
 
-            if ( primarytext !== undefined ) {
-                var t1 = gclh_search_helper_html_element( 'span', primarytext );
+            if ( text !== undefined ) { 
+                var t1 = gclh_search_helper_html_element( 'span', text );
                 var t2 = gclh_search_helper_html_element( 'span', secondarytext, { 'style': 'margin-left: 0.5em; color: #888888; font-style: italic;' } );
 
                 options.center = {
